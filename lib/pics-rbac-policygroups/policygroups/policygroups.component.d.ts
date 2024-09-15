@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, OnInit } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AlertService } from '../@core/service/alert.service';
 import { DataStoreService } from '../@core/service/data-store.service';
@@ -9,7 +9,6 @@ import * as i0 from "@angular/core";
 export declare class PolicygroupsComponent implements OnInit {
     private fb;
     private alertService;
-    private cdr;
     private groupsService;
     private _storeservice;
     RBACORG: RBACINFO;
@@ -36,7 +35,7 @@ export declare class PolicygroupsComponent implements OnInit {
     };
     inputValidationMethod: any;
     isButtonDisabled: boolean;
-    constructor(fb: FormBuilder, alertService: AlertService, cdr: ChangeDetectorRef, groupsService: RbacService, _storeservice: DataStoreService);
+    constructor(fb: FormBuilder, alertService: AlertService, groupsService: RbacService, _storeservice: DataStoreService);
     ngOnInit(): void;
     initializeForm(): void;
     get formValidate(): {
