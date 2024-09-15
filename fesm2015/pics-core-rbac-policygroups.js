@@ -634,6 +634,8 @@ class PolicygroupsComponent {
         var _a, _b;
         const error = this.inputValidationMethod(event, fieldtype, label, required);
         if (error && typeof error === 'string') {
+            const control = this.policyGroupForm.get(label);
+            control.setErrors({ customError: error });
             this.validationErrors[label] = error;
         }
         else {

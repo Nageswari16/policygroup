@@ -1153,6 +1153,8 @@
             var _a, _b;
             var error = this.inputValidationMethod(event, fieldtype, label, required);
             if (error && typeof error === 'string') {
+                var control = this.policyGroupForm.get(label);
+                control.setErrors({ customError: error });
                 this.validationErrors[label] = error;
             }
             else {
