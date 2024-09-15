@@ -1217,8 +1217,13 @@
                 errorcontrolwithlabel = 'description';
                 errormessage = this.validationErrors['Description'];
             }
-            var control = this.policyGroupForm.get(errorcontrolwithlabel);
-            control.setErrors({ customError: errormessage });
+            else {
+                errormessage = null;
+            }
+            if (errormessage) {
+                var control = this.policyGroupForm.get(errorcontrolwithlabel);
+                control.setErrors({ customError: errormessage });
+            }
             // if (!this.validationErrors['Policy Group Name'] || !this.validationErrors['Description']) {
             if (this.policyGroupForm.valid) {
                 if (this.policyGroupId) {
