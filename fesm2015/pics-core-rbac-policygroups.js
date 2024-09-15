@@ -620,7 +620,7 @@ class PolicygroupsComponent {
     initializeForm() {
         this.policyGroupForm = this.fb.group({
             id: [null],
-            policygroupname: ['', Validators.required, this.validationErrors['policygroupname']],
+            policygroupname: ['', Validators.required, this.validationErrors['Policy Group Name']],
             description: ['']
         });
     }

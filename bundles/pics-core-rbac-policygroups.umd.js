@@ -1135,7 +1135,7 @@
         PolicygroupsComponent.prototype.initializeForm = function () {
             this.policyGroupForm = this.fb.group({
                 id: [null],
-                policygroupname: ['', i1$1.Validators.required, this.validationErrors['policygroupname']],
+                policygroupname: ['', i1$1.Validators.required, this.validationErrors['Policy Group Name']],
                 description: ['']
             });
         };
