@@ -1103,7 +1103,6 @@
             this.deleteactive_role = false;
             this.deleteactive_buttonok = false;
             this.validationErrors = {};
-            this.isButtonDisabled = true;
             this.formSubmit = false;
             this.initializeForm();
         }
@@ -1119,16 +1118,6 @@
                         _this.getPolicyGroupList();
                         _this.getManagementGroupTree(_this.orgId);
                     }
-                }
-            });
-            this.policyGroupForm.statusChanges.subscribe(function () {
-                var _a, _b;
-                if (((_a = _this.policyGroupForm.controls) === null || _a === void 0 ? void 0 : _a['policygroupname'].value) ||
-                    ((_b = _this.policyGroupForm.controls) === null || _b === void 0 ? void 0 : _b['description'].value)) {
-                    _this.isButtonDisabled = false;
-                }
-                else {
-                    _this.isButtonDisabled = true;
                 }
             });
         };
@@ -1150,21 +1139,12 @@
             this.orgSubs.unsubscribe();
         };
         PolicygroupsComponent.prototype.onInput = function (event, fieldtype, label, required) {
-            var _a, _b;
             var error = this.inputValidationMethod(event, fieldtype, label, required);
             if (error && typeof error === 'string') {
                 this.validationErrors[label] = error;
             }
             else {
                 delete this.validationErrors[label];
-            }
-            //
-            if (((_a = this.policyGroupForm.controls) === null || _a === void 0 ? void 0 : _a['policygroupname'].value) ||
-                ((_b = this.policyGroupForm.controls) === null || _b === void 0 ? void 0 : _b['description'].value)) {
-                this.isButtonDisabled = false;
-            }
-            else {
-                this.isButtonDisabled = true;
             }
         };
         PolicygroupsComponent.prototype.getPolicyGroupList = function (_managementGroupId) {
@@ -1189,7 +1169,6 @@
         PolicygroupsComponent.prototype.getPolicyGroupInfo = function (policyGroup) {
             var _this = this;
             this.validationErrors = {};
-            this.formSubmit = false;
             this.policyGroupId = policyGroup.id;
             this.groupsService.getPolicyGroupById(this.policyGroupId).subscribe(function (res) {
                 res['data'].managementgroupid = _this.managementGroups.find(function (item) { return item.id === res['data'].managementgroupid; });
@@ -1197,51 +1176,19 @@
                 _this.attachedUsers = res['data'].users;
             });
         };
-        PolicygroupsComponent.prototype.customerrorvalidation = function () {
-            var errorcontrolwithlabel;
-            var errormessage;
-            if (this.validationErrors['Policy Group Name']) {
-                errorcontrolwithlabel = 'policygroupname';
-                errormessage = this.validationErrors['Policy Group Name'];
-            }
-            else if (this.validationErrors['Description']) {
-                errorcontrolwithlabel = 'description';
-                errormessage = this.validationErrors['Description'];
-            }
-            else {
-                errormessage = null;
-            }
-            if (errormessage) {
-                var control = this.policyGroupForm.get(errorcontrolwithlabel);
-                control.setErrors({ customError: errormessage });
-            }
-        };
         PolicygroupsComponent.prototype.addPolicyGroup = function () {
             var _this = this;
             var requestBody = [];
             this.formSubmit = true;
-            this.policyGroupForm.patchValue({
-                policygroupname: this.policyGroupForm.value.policygroupname.trim()
-            });
             var data = this.policyGroupForm.getRawValue();
             data = Object.assign({ organizationid: this.orgId }, data);
             requestBody.push(data);
-            this.customerrorvalidation();
-            // if (!this.validationErrors['Policy Group Name'] || !this.validationErrors['Description']) {
             if (this.policyGroupForm.valid) {
                 if (this.policyGroupId) {
                     this.groupsService.updatePolicyGroup(this.policyGroupId, data).subscribe(function () {
                         _this.getPolicyGroupList();
                         _this.alertService.success('Policy Group updated successfully');
-                    }, function (err) {
-                        var _a;
-                        if (err === null || err === void 0 ? void 0 : err.error) {
-                            _this.alertService.error((_a = err === null || err === void 0 ? void 0 : err.error) === null || _a === void 0 ? void 0 : _a.message);
-                        }
-                        else {
-                            _this.alertService.error('Failed to update Policy Group');
-                        }
-                    });
+                    }, function (_err) { return _this.alertService.error('Failed to update Policy Group'); });
                 }
                 else {
                     this.groupsService.createPolicyGroup(requestBody).subscribe(function () {
@@ -1296,8 +1243,6 @@
             this.validationErrors = {};
         };
         PolicygroupsComponent.prototype.onClickAddPolicygroup = function () {
-            this.isButtonDisabled = true;
-            this.formSubmit = false;
             this.initializeForm();
             this.policyGroupId = 0;
             this.validationErrors = {};
@@ -1317,7 +1262,7 @@
         return PolicygroupsComponent;
     }());
     PolicygroupsComponent.ɵfac = i0__namespace.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: PolicygroupsComponent, deps: [{ token: i1__namespace$1.FormBuilder }, { token: AlertService }, { token: RbacService }, { token: DataStoreService }], target: i0__namespace.ɵɵFactoryTarget.Component });
-    PolicygroupsComponent.ɵcmp = i0__namespace.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: PolicygroupsComponent, selector: "policygroups", ngImport: i0__namespace, template: "<app-alert></app-alert>\r\n<div class=\"permission\">\r\n  <div class=\"row\" [formGroup]=\"policyGroupForm\">\r\n    <div class=\"col-lg-4 col-md-6 col-12\">\r\n      <div class=\"clearfix\"></div>\r\n      <div class=\"tab-content py-2\">\r\n        <div class=\"tab-pane fade show active\">\r\n          <div class=\"form-group bgiconsearch d-flex align-items-center\"> <!-- Modified line -->\r\n            <span class=\"p-input-icon-right w-100\">\r\n              <i class=\"pi pi-times-circle\" (click)=\"clearSearch($event)\"></i>\r\n              <input class=\"form-control\" fieldKey=\"SETTINGS_PGP_SEARCH_BY_NAME\"\r\n                placeholder=\"Search by Policy Group name\" type=\"text\" (keyup)=\"searchPolicyGroup($event)\" />\r\n            </span>\r\n            <button type=\"button\" class=\"btn btn-primary btncommon ml-2\" (click)=\"onClickAddPolicygroup()\">Add</button>\r\n            <!-- Modified line -->\r\n          </div>\r\n          <div class=\"clearfix\"></div>\r\n          <div class=\"useracess\">\r\n            <div class=\"d-flex align-items-center justify-content-center h-100 w-100 ng-star-inserted\"\r\n              *ngIf=\"!filteredPolicyGroupList.length\">\r\n              <p>No Record Found</p>\r\n            </div>\r\n            <ng-container *ngFor=\"let item of filteredPolicyGroupList\">\r\n              <div class=\"row userdata align-items-center\" (click)=\"getPolicyGroupInfo(item)\"\r\n                [ngClass]=\"{ active: item.id === policyGroupId }\">\r\n                <!-- <div class=\"col-lg-2 col-md-3 col-3\">\r\n                            <img src=\"assets/images/user-empty.png\" alt=\"user\" class=\"userempty\" />\r\n                        </div> -->\r\n                <div class=\"col-md-10 col-sm-10 col-10 overflow_txt\">\r\n                  <span class=\"nameuser\">{{ item.policygroupname }}</span> <br />\r\n                </div>\r\n                <div class=\"col-md-2 text-right\">\r\n                  <span class=\"right-icons\">\r\n                    <em class=\"fa fa-trash text-primary\" *showField=\"'SETTINGS_PGP_DELETE'\"\r\n                      (click)=\"delete($event, item.id, item)\" aria-hidden=\"true\"></em>\r\n                  </span>\r\n                </div>\r\n              </div>\r\n            </ng-container>\r\n          </div>\r\n        </div>\r\n      </div>\r\n\r\n    </div>\r\n    <div class=\"col-lg-8 col-md-6 col-12 mt-2 group-role\">\r\n      <p-card class=\"rbac-card\" styleClass=\"w-100 mb-2\">\r\n        <div class=\"strip_head toggleleft\">\r\n          <span class=\"report_head font-weight-bold\">Policy Group Details</span>\r\n        </div>\r\n        <div class=\"p-fluid p-formgrid row\">\r\n          <div class=\"col-lg-6 col-md-12 col-12 mb-2\">\r\n            <label for=\"policyGroup\" class=\"referral-form-labels\">Policy Group Name\r\n              <span class=\"requiredfield text-danger\">*</span>\r\n            </label>\r\n            <input id=\"policyGroup\" type=\"text\" formControlName=\"policygroupname\" placeholder=\"Enter Policy Group Name\"\r\n              aria-describedby=\"policyGroup\" fieldKey=\"SETTINGS_PGP_POLICY_GROUP_NAME\" [(ngModel)]=\"modelPolicyName\"\r\n              (ngModelChange)=\"onModelPolicy($event)\" (input)=\"onInput($event, 'name', 'Policy Group Name', true)\"\r\n              pInputText />\r\n            <div *ngIf=\"validationErrors['Policy Group Name']\" class=\"p-error block mt-1\">{{validationErrors['Policy\r\n              Group Name']}}</div>\r\n            <div *ngIf=\"!validationErrors['Policy Group Name'] && formValidate['policygroupname'].errors && formSubmit\">\r\n              <div *ngIf=\"formValidate['policygroupname'].invalid\" class=\"p-error block mt-1\">Policy Group Name is\r\n                required\r\n              </div>\r\n            </div>\r\n          </div>\r\n          <div class=\"col-lg-6 col-md-12 col-12 mb-2\">\r\n            <label for=\"policyDescription\" class=\"referral-form-labels\">Description </label>\r\n            <input id=\"policyDescription\" fieldKey=\"SETTINGS_PGP_DESCRIPTION\" type=\"text\" formControlName=\"description\"\r\n              placeholder=\"Description\" aria-describedby=\"policyDescription\"\r\n              (input)=\"onInput($event, 'description', 'Description', false)\" pInputText />\r\n            <div *ngIf=\"validationErrors['Description']\" class=\"p-error block mt-1\">{{validationErrors['Description']}}\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div class=\"mt-2\">\r\n          <button class=\"pull-right mb-2 btn btn-primary btncommon\" fieldKey=\"SETTINGS_PGP_ADD_POLICY_GROUP\"\r\n            (click)=\"addPolicyGroup()\">\r\n            {{ policyGroupId ? 'Update Policy Group' : 'Add Policy Group' }}\r\n          </button>\r\n          <button class=\"pull-right mb-2 mr-2 btn bg-white text-primary border border-primary btncancel\"\r\n            fieldKey=\"SETTINGS_PGP_CANCEL\" (click)=\"cancel()\" [disabled]=\"isButtonDisabled\">\r\n            Clear\r\n          </button>\r\n          <br />\r\n          <br />\r\n        </div>\r\n        <br />\r\n      </p-card>\r\n    </div>\r\n  </div>\r\n</div>\r\n<div class=\"modal\" id=\"Deleteuser\" tabindex=\"-1\" role=\"dialog\">\r\n  <div class=\"modal-dialog\" role=\"document\">\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-body\">\r\n        <p>{{ modalContent }}</p>\r\n        <div class=\"clearfix\"></div>\r\n        <div class=\"mt-2\">\r\n          <button class=\"pull-right mb-2 btn btn-primary btncommon delete\" data-dismiss=\"modal\"\r\n            (click)=\"deletePolicyGroup()\" *ngIf=\"deleteactive_role\">\r\n            Delete\r\n          </button>\r\n          <button class=\"pull-right mb-2 mr-2 btn bg-white text-primary btncancel\" data-dismiss=\"modal\"\r\n            *ngIf=\"deleteactive_buttonok\">\r\n            Cancel\r\n          </button>\r\n          <button class=\"pull-right mb-2 mr-2 btn bg-white text-primary btncancel\" data-dismiss=\"modal\"\r\n            *ngIf=\"!deleteactive_buttonok\">\r\n            OK\r\n          </button>\r\n        </div>\r\n        <div class=\"clearfix\"></div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".head-div{padding-top:9px;padding-left:7px}.bgiconsearch{margin-bottom:5px;padding-bottom:0;font-size:13px}.useracess{border-radius:2px;padding:5px 0;overflow-y:auto}.userempty{max-width:none;border-radius:50%;height:35px;width:35px}.row.userdata{margin:0;border-bottom:solid 1px var(--table-border);padding:5px 0;cursor:pointer}.overflow_txt{overflow:hidden;text-overflow:ellipsis}span.nameuser{font-size:var(--font-16);color:var(--label-text);font-weight:400}.userid,span.emailuser{font-size:var(--font-15);color:#838383}.toggleleft{font-size:14px;font-weight:600;display:block;margin-top:-12px;padding-bottom:13px}.rbac-card .p-fluid .p-inputtext{padding:8px}.right-icons .fa{margin-top:3px;display:inline-block;z-index:9}.right-icons .fa-trash{font-size:18px}@media screen and (max-width: 767px){.useracess{max-height:400px}}@media screen and (min-width: 768px){.useracess{height:calc(100vh - 188px)}}@media screen and (min-width: 990px) and (max-width: 1024px){.useracess .userempty{height:100%;width:100%}}\n"], components: [{ type: AlertComponent, selector: "app-alert" }, { type: i6__namespace.Card, selector: "p-card", inputs: ["header", "subheader", "style", "styleClass"] }], directives: [{ type: i1__namespace$1.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { type: i1__namespace$1.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { type: PermissionDirective, selector: "[fieldKey]", inputs: ["fieldKey"] }, { type: i8__namespace.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { type: i8__namespace.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { type: i8__namespace.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { type: ShowFieldDirective, selector: "[showField]", inputs: ["showField"] }, { type: i1__namespace$1.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { type: i1__namespace$1.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { type: i1__namespace$1.FormControlName, selector: "[formControlName]", inputs: ["disabled", "formControlName", "ngModel"], outputs: ["ngModelChange"] }, { type: i10__namespace.InputText, selector: "[pInputText]" }] });
+    PolicygroupsComponent.ɵcmp = i0__namespace.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: PolicygroupsComponent, selector: "policygroups", ngImport: i0__namespace, template: "<app-alert></app-alert>\r\n<div class=\"permission\">\r\n  <div class=\"row\" [formGroup]=\"policyGroupForm\">\r\n    <div class=\"col-lg-4 col-md-6 col-12\">\r\n      <div class=\"clearfix\"></div>\r\n      <div class=\"tab-content py-2\">\r\n        <div class=\"tab-pane fade show active\">\r\n            <div class=\"form-group bgiconsearch d-flex align-items-center\"> <!-- Modified line -->\r\n                <span class=\"p-input-icon-right w-100\">\r\n                    <i class=\"pi pi-times-circle\" (click)=\"clearSearch($event)\"></i>\r\n                    <input class=\"form-control\" fieldKey=\"SETTINGS_PGP_SEARCH_BY_NAME\" placeholder=\"Search by Name\" type=\"text\"\r\n                           (keyup)=\"searchPolicyGroup($event)\" />\r\n                </span>\r\n                <button type=\"button\" class=\"btn btn-primary btncommon ml-2\" (click)=\"onClickAddPolicygroup()\">Add</button> <!-- Modified line -->\r\n            </div>\r\n            <div class=\"clearfix\"></div>\r\n            <div class=\"useracess\">\r\n                <div class=\"d-flex align-items-center justify-content-center h-100 w-100 ng-star-inserted\"\r\n                     *ngIf=\"!filteredPolicyGroupList.length\">\r\n                    <p>No Record Found</p>\r\n                </div>\r\n                <ng-container *ngFor=\"let item of filteredPolicyGroupList\">\r\n                    <div class=\"row userdata align-items-center\" (click)=\"getPolicyGroupInfo(item)\" [ngClass]=\"{ active: item.id === policyGroupId }\">\r\n                        <!-- <div class=\"col-lg-2 col-md-3 col-3\">\r\n                            <img src=\"assets/images/user-empty.png\" alt=\"user\" class=\"userempty\" />\r\n                        </div> -->\r\n                        <div class=\"col-md-10 col-sm-10 col-10 overflow_txt\">\r\n                            <span class=\"nameuser\">{{ item.policygroupname }}</span> <br />\r\n                        </div>\r\n                        <div class=\"col-md-2 text-right\">\r\n                            <span class=\"right-icons\">\r\n                                <em class=\"fa fa-trash text-primary\" *showField=\"'SETTINGS_PGP_DELETE'\"\r\n                                    (click)=\"delete($event, item.id, item)\" aria-hidden=\"true\"></em>\r\n                            </span>\r\n                        </div>\r\n                    </div>\r\n                </ng-container>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    </div>\r\n    <div class=\"col-lg-8 col-md-6 col-12 mt-2 group-role\">\r\n      <p-card class=\"rbac-card\" styleClass=\"w-100 mb-2\">\r\n        <div class=\"strip_head toggleleft\">\r\n          <span class=\"report_head font-weight-bold\">Policy Group Details</span>\r\n        </div>\r\n        <div class=\"p-fluid p-formgrid p-grid\">\r\n          <div class=\"col-lg-6 col-md-12 col-12 mb-2\">\r\n            <label for=\"policyGroup\" class=\"referral-form-labels\">Policy Group Name\r\n              <span class=\"requiredfield text-danger\">*</span>\r\n            </label>\r\n            <input id=\"policyGroup\" type=\"text\" formControlName=\"policygroupname\" placeholder=\"Enter Policy Group Name\"\r\n              aria-describedby=\"policyGroup\" fieldKey=\"SETTINGS_PGP_POLICY_GROUP_NAME\" [(ngModel)]=\"modelPolicyName\"\r\n              (ngModelChange)=\"onModelPolicy($event)\"\r\n              (input)=\"onInput($event, 'name', 'Policy Group Name', true)\" pInputText />\r\n              <div *ngIf=\"validationErrors['Policy Group Name']\" class=\"p-error block mt-1\">{{validationErrors['Policy Group Name']}}</div>\r\n            <!-- <div *ngIf=\"formValidate['policygroupname'].errors && formSubmit\">\r\n              <small *ngIf=\"formValidate['policygroupname'].invalid\" class=\"p-error block\">Policy Group Name is required\r\n              </small>\r\n            </div> -->\r\n          </div>\r\n          <div class=\"col-lg-6 col-md-12 col-12 mb-2\">\r\n            <label for=\"policyDescription\" class=\"referral-form-labels\">Description </label>\r\n            <input id=\"policyDescription\" fieldKey=\"SETTINGS_PGP_DESCRIPTION\" type=\"text\" formControlName=\"description\"\r\n              placeholder=\"Description\" aria-describedby=\"policyDescription\"\r\n              (input)=\"onInput($event, 'description', 'Description', false)\" pInputText />\r\n              <div *ngIf=\"validationErrors['Description']\" class=\"p-error block mt-1\">{{validationErrors['Description']}}</div>\r\n          </div>\r\n        </div>\r\n        <div class=\"mt-2\">\r\n          <button class=\"pull-right mb-2 btn btn-primary btncommon\" fieldKey=\"SETTINGS_PGP_ADD_POLICY_GROUP\"\r\n            (click)=\"addPolicyGroup()\">\r\n            {{ policyGroupId ? 'Update Policy Group' : 'Add Policy Group' }}\r\n          </button>\r\n          <button class=\"pull-right mb-2 mr-2 btn bg-white text-primary border border-primary btncancel\"\r\n            fieldKey=\"SETTINGS_PGP_CANCEL\" (click)=\"cancel()\">\r\n            Clear\r\n          </button>\r\n          <br />\r\n          <br />\r\n        </div>\r\n        <br />\r\n      </p-card>\r\n    </div>\r\n  </div>\r\n</div>\r\n<div class=\"modal\" id=\"Deleteuser\" tabindex=\"-1\" role=\"dialog\">\r\n  <div class=\"modal-dialog\" role=\"document\">\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-header\">\r\n        <h5 class=\"modal-title\" *ngIf = \"deleteactive_role\">Delete Policy Group</h5>\r\n        <h5 class=\"modal-title\" *ngIf = \"!deleteactive_role\">Warning - Policy Group</h5>\r\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\r\n          <span aria-hidden=\"true\">&times;</span>\r\n        </button>\r\n      </div>\r\n      <div class=\"modal-body\">\r\n        {{ modalContent }}\r\n        <div class=\"clearfix\"></div>\r\n        <div class=\"mt-2\">\r\n          <button class=\"pull-right mb-2 btn btn-primary btncommon delete\" data-dismiss=\"modal\"\r\n            (click)=\"deletePolicyGroup()\" *ngIf = \"deleteactive_role\">\r\n            Delete\r\n          </button>\r\n          <button class=\"pull-right mb-2 mr-2 btn bg-white text-primary btncancel\" data-dismiss=\"modal\" *ngIf = \"deleteactive_buttonok\">\r\n            Cancel\r\n          </button>\r\n          <button class=\"pull-right mb-2 mr-2 btn bg-white text-primary btncancel\" data-dismiss=\"modal\" *ngIf = \"!deleteactive_buttonok\">\r\n            OK\r\n          </button>\r\n        </div>\r\n        <div class=\"clearfix\"></div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n", styles: [".head-div{padding-top:9px;padding-left:7px}.bgiconsearch{margin-bottom:5px;padding-bottom:0;font-size:13px}.useracess{border-radius:2px;padding:5px 0;overflow-y:auto}.userempty{max-width:none;border-radius:50%;height:35px;width:35px}.row.userdata{margin:0;border-bottom:solid 1px var(--table-border);padding:5px 0;cursor:pointer}.overflow_txt{overflow:hidden;text-overflow:ellipsis}span.nameuser{font-size:var(--font-13);color:var(--label-text);font-weight:600}.userid,span.emailuser{font-size:var(--font-13);color:#838383}.toggleleft{font-size:14px;font-weight:600;display:block;margin-top:-12px;padding-bottom:13px}.rbac-card .p-fluid .p-inputtext{padding:8px}.right-icons .fa{margin-top:3px;display:inline-block;z-index:9}.right-icons .fa-trash{font-size:18px}@media screen and (max-width: 767px){.useracess{max-height:400px}}@media screen and (min-width: 768px){.useracess{height:calc(100vh - 188px)}}@media screen and (min-width: 990px) and (max-width: 1024px){.useracess .userempty{height:100%;width:100%}}\n"], components: [{ type: AlertComponent, selector: "app-alert" }, { type: i6__namespace.Card, selector: "p-card", inputs: ["header", "subheader", "style", "styleClass"] }], directives: [{ type: i1__namespace$1.NgControlStatusGroup, selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]" }, { type: i1__namespace$1.FormGroupDirective, selector: "[formGroup]", inputs: ["formGroup"], outputs: ["ngSubmit"], exportAs: ["ngForm"] }, { type: PermissionDirective, selector: "[fieldKey]", inputs: ["fieldKey"] }, { type: i8__namespace.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { type: i8__namespace.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { type: i8__namespace.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { type: ShowFieldDirective, selector: "[showField]", inputs: ["showField"] }, { type: i1__namespace$1.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { type: i1__namespace$1.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { type: i1__namespace$1.FormControlName, selector: "[formControlName]", inputs: ["disabled", "formControlName", "ngModel"], outputs: ["ngModelChange"] }, { type: i10__namespace.InputText, selector: "[pInputText]" }] });
     i0__namespace.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: PolicygroupsComponent, decorators: [{
                 type: i0.Component,
                 args: [{
