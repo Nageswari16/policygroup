@@ -675,15 +675,7 @@ class PolicygroupsComponent {
             this.attachedUsers = res['data'].users;
         });
     }
-    addPolicyGroup() {
-        const requestBody = [];
-        this.formSubmit = true;
-        this.policyGroupForm.patchValue({
-            policygroupname: this.policyGroupForm.value.policygroupname.trim()
-        });
-        let data = this.policyGroupForm.getRawValue();
-        data = Object.assign({ organizationid: this.orgId }, data);
-        requestBody.push(data);
+    customerrorvalidation() {
         let errorcontrolwithlabel;
         let errormessage;
         if (this.validationErrors['Policy Group Name']) {
@@ -701,6 +693,17 @@ class PolicygroupsComponent {
             const control = this.policyGroupForm.get(errorcontrolwithlabel);
             control.setErrors({ customError: errormessage });
         }
+    }
+    addPolicyGroup() {
+        const requestBody = [];
+        this.formSubmit = true;
+        this.policyGroupForm.patchValue({
+            policygroupname: this.policyGroupForm.value.policygroupname.trim()
+        });
+        let data = this.policyGroupForm.getRawValue();
+        data = Object.assign({ organizationid: this.orgId }, data);
+        requestBody.push(data);
+        this.customerrorvalidation();
         // if (!this.validationErrors['Policy Group Name'] || !this.validationErrors['Description']) {
         if (this.policyGroupForm.valid) {
             if (this.policyGroupId) {

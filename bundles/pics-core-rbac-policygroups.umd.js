@@ -1197,16 +1197,7 @@
                 _this.attachedUsers = res['data'].users;
             });
         };
-        PolicygroupsComponent.prototype.addPolicyGroup = function () {
-            var _this = this;
-            var requestBody = [];
-            this.formSubmit = true;
-            this.policyGroupForm.patchValue({
-                policygroupname: this.policyGroupForm.value.policygroupname.trim()
-            });
-            var data = this.policyGroupForm.getRawValue();
-            data = Object.assign({ organizationid: this.orgId }, data);
-            requestBody.push(data);
+        PolicygroupsComponent.prototype.customerrorvalidation = function () {
             var errorcontrolwithlabel;
             var errormessage;
             if (this.validationErrors['Policy Group Name']) {
@@ -1224,6 +1215,18 @@
                 var control = this.policyGroupForm.get(errorcontrolwithlabel);
                 control.setErrors({ customError: errormessage });
             }
+        };
+        PolicygroupsComponent.prototype.addPolicyGroup = function () {
+            var _this = this;
+            var requestBody = [];
+            this.formSubmit = true;
+            this.policyGroupForm.patchValue({
+                policygroupname: this.policyGroupForm.value.policygroupname.trim()
+            });
+            var data = this.policyGroupForm.getRawValue();
+            data = Object.assign({ organizationid: this.orgId }, data);
+            requestBody.push(data);
+            this.customerrorvalidation();
             // if (!this.validationErrors['Policy Group Name'] || !this.validationErrors['Description']) {
             if (this.policyGroupForm.valid) {
                 if (this.policyGroupId) {

@@ -47,6 +47,7 @@ export declare class PolicygroupsComponent implements OnInit {
     getManagementGroupTree(organizationid: any): void;
     searchPolicyGroup(event: Event): void;
     getPolicyGroupInfo(policyGroup: any): void;
+    customerrorvalidation(): void;
     addPolicyGroup(): void;
     delete(event: Event, id: any, item: any): void;
     clearSearch(event: Event): void;
