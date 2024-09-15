@@ -620,7 +620,7 @@ class PolicygroupsComponent {
     initializeForm() {
         this.policyGroupForm = this.fb.group({
             id: [null],
-            policygroupname: ['', Validators.required],
+            policygroupname: ['', Validators.required, this.validationErrors['policygroupname']],
             description: ['']
         });
     }
@@ -684,7 +684,7 @@ class PolicygroupsComponent {
         let data = this.policyGroupForm.getRawValue();
         data = Object.assign({ organizationid: this.orgId }, data);
         requestBody.push(data);
-        if (!this.validationErrors) {
+        if (this.policyGroupForm.valid) {
             if (this.policyGroupId) {
                 this.groupsService.updatePolicyGroup(this.policyGroupId, data).subscribe(() => {
                     this.getPolicyGroupList();

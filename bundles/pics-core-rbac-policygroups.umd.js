@@ -1135,7 +1135,7 @@
         PolicygroupsComponent.prototype.initializeForm = function () {
             this.policyGroupForm = this.fb.group({
                 id: [null],
-                policygroupname: ['', i1$1.Validators.required],
+                policygroupname: ['', i1$1.Validators.required, this.validationErrors['policygroupname']],
                 description: ['']
             });
         };
@@ -1207,7 +1207,7 @@
             var data = this.policyGroupForm.getRawValue();
             data = Object.assign({ organizationid: this.orgId }, data);
             requestBody.push(data);
-            if (!this.validationErrors) {
+            if (this.policyGroupForm.valid) {
                 if (this.policyGroupId) {
                     this.groupsService.updatePolicyGroup(this.policyGroupId, data).subscribe(function () {
                         _this.getPolicyGroupList();
