@@ -1153,20 +1153,23 @@
         PolicygroupsComponent.prototype.onInput = function (event, fieldtype, label, required) {
             var _a, _b;
             var error = this.inputValidationMethod(event, fieldtype, label, required);
+            var errorcontrolwithlabel;
+            if (label === 'Policy Group Name') {
+                errorcontrolwithlabel = 'policygroupname';
+            }
+            else if (label === 'Description') {
+                errorcontrolwithlabel = 'description';
+            }
+            var control = this.policyGroupForm.get(errorcontrolwithlabel);
             if (error && typeof error === 'string') {
                 this.validationErrors[label] = error;
-                var errorcontrolwithlabel = void 0;
-                if (label === 'Policy Group Name') {
-                    errorcontrolwithlabel = 'policygroupname';
-                }
-                else if (label === 'Description') {
-                    errorcontrolwithlabel = 'description';
-                }
-                var control = this.policyGroupForm.get(errorcontrolwithlabel);
                 control.setErrors({ customError: error });
+                control.updateValueAndValidity(); // Ensure validation status is updated
             }
             else {
                 delete this.validationErrors[label];
+                control.setErrors(null); // Ensure validation status is updated
+                control.updateValueAndValidity(); // Ensure validation status is updated
             }
             this.cdr.detectChanges(); // Trigger change detection if necessary
             //
