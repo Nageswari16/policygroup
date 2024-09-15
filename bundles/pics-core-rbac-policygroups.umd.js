@@ -1207,7 +1207,20 @@
             var data = this.policyGroupForm.getRawValue();
             data = Object.assign({ organizationid: this.orgId }, data);
             requestBody.push(data);
-            if (!this.validationErrors['Policy Group Name'] && !this.validationErrors['Description']) {
+            var errorcontrolwithlabel;
+            var errormessage;
+            if (this.validationErrors['Policy Group Name']) {
+                errorcontrolwithlabel = 'policygroupname';
+                errormessage = this.validationErrors['Policy Group Name'];
+            }
+            else if (this.validationErrors['Description']) {
+                errorcontrolwithlabel = 'description';
+                errormessage = this.validationErrors['Description'];
+            }
+            var control = this.policyGroupForm.get(errorcontrolwithlabel);
+            control.setErrors({ customError: errormessage });
+            // if (!this.validationErrors['Policy Group Name'] || !this.validationErrors['Description']) {
+            if (this.policyGroupForm.valid) {
                 if (this.policyGroupId) {
                     this.groupsService.updatePolicyGroup(this.policyGroupId, data).subscribe(function () {
                         _this.getPolicyGroupList();
