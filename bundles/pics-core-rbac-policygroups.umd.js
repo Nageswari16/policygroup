@@ -1151,7 +1151,7 @@
         };
         PolicygroupsComponent.prototype.onInput = function (event, formcontrolname, fieldtype, label, required) {
             var _a, _b, _c, _d;
-            var error = this.inputValidationMethod(event, fieldtype, label, required);
+            var error = this.inputValidationMethod(event, formcontrolname, fieldtype, label, required);
             if (error && typeof error === 'string') {
                 this.validationErrors[label] = error;
                 (_a = this.policyGroupForm.controls) === null || _a === void 0 ? void 0 : _a[formcontrolname].setErrors({ custom: error });
