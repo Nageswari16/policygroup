@@ -34,6 +34,7 @@ export declare class PolicygroupsComponent implements OnInit {
         [key: string]: string;
     };
     inputValidationMethod: any;
+    isButtonDisabled: boolean;
     constructor(fb: FormBuilder, alertService: AlertService, groupsService: RbacService, _storeservice: DataStoreService);
     ngOnInit(): void;
     initializeForm(): void;
