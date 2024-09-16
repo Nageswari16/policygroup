@@ -42,6 +42,7 @@ export declare class PolicygroupsComponent implements OnInit {
         [key: string]: import("@angular/forms").AbstractControl;
     };
     ngOnDestroy(): void;
+    errorMessage(formcontrolname: any, error: any): void;
     onInput(event: Event, formcontrolname: any, fieldtype: any, label: any, required: boolean): void;
     getPolicyGroupList(_managementGroupId?: number): void;
     getManagementGroupTree(organizationid: any): void;
